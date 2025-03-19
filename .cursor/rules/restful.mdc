@@ -1,0 +1,130 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+一、文档结构规范
+
+1.标题层级
+- 接口清单（一级标题）
+- 接口名称（二级标题）
+- 接口版本（三级标题）
+- 请求参数（四级标题）
+- 返回字段说明（五级标题）
+2.版本控制
+需在文档顶部声明版本历史（表格形式）
+接口请求需包含版本头：Accept: application/vnd.project.v1+json
+日期	    版本	 作者	 更新内容
+2025-03-19	1.0	    用户	初始版本
+
+
+
+二、接口设计规范
+
+1.URI命名规则
+- 资源使用复数名词：/users 而非 /user
+- 层级关系用斜杠：/users/{id}/posts
+- 过滤参数用问号：/users?role=admin
+2.HTTP方法映射
+方法	用途	示例
+GET	获取资源	GET /users
+POST	创建资源	POST /login
+PUT	全量更新资源	PUT /users/{id}
+PATCH	部分更新资源（如token）	PATCH /token
+DELETE	删除资源	DELETE /posts/{id}
+
+
+
+
+三、请求响应规范
+
+1.状态码定义
+```json
+// 成功（200系列）
+{ "code": 200, "msg": "SUCCESS" }
+
+// 客户端错误（400系列）
+{ "err_code": 401, "err_msg": "凭证过期" }
+
+// 服务端错误（500系列）
+{ "err_code": 503, "err_msg": "服务不可用" }
+```
+2.参数表格模板
+参数名	    必选	  类型	   说明
+username	true	string	用户手机号（11位数字）
+password	true	string	MD5加密后的32位字符串
+
+
+
+
+
+四、安全认证规范 1
+
+JWT认证流程
+```bash
+# 登录请求示例
+curl -X POST https://api.domain.com/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"user1", "password":"md5hash"}'
+```
+Token刷新机制
+访问Token有效期：2小时
+刷新Token有效期：14天
+刷新接口示例：
+```json
+{
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  },
+  "code": 200,
+  "msg": "TOKEN_REFRESHED"
+}
+```
+
+
+
+
+
+五、示例模板
+
+## 用户登录接口
+**请求说明**
+```http
+POST /api/v1/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "13800138000",
+  "password": "e10adc3949ba59abbe56e057f20f883e"
+}
+```
+
+**返回结果**
+```json
+{
+  "data": {
+    "user_id": "U20250319001",
+    "access_token": "Bearer eyJhbGci...",
+    "expires_in": 7200
+  },
+  "code": 200,
+  "msg": "LOGIN_SUCCESS"
+}
+```
+
+
+
+
+六、扩展规范
+
+1.时间戳格式：YYYY-MM-DDTHH:MM:SSZ（如2025-03-19T15:30:00Z）
+2.错误重试策略：连续5次失败后锁定15分钟 1
+3.文档自动化建议：
+- 使用[TOC]生成目录
+- 通过代码块语法高亮（如json/http）
+- 用> 标注注意事项
+
+
+
+
+

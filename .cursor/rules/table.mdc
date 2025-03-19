@@ -1,0 +1,37 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 文件头配置
+---
+name: database-rules
+description: Database schema generation standards
+globs: 
+  - 'db/migrate/**/*.rb'    # 匹配迁移文件
+  - 'db/schema.rb'          # 匹配Schema文件
+  - 'app/models/**/*.rb'    # 匹配模型文件
+priority: 90                # 高于常规规则
+---
+
+
+二、表结构生成规则
+
+** 使用mysql 8数据库
+
+
+** 命名规范
+- 表名使用复数蛇形命名（users/order_items）24
+- 多对多关联表采用<table1>_<table2>格式（如user_roles）
+- 避免使用SQL保留字（desc/group/order等）3
+**字段定义标准
+## 字段类型规则
+- 优先使用数据库原生类型（如`uuid`而非字符串存储ID）
+- 金额字段必须使用`decimal(precision, scale)`类型
+- 禁用`text`类型替代`varchar`，长度限制需显式声明
+- 时间字段统一使用`timestamp with time zone`
+
+## 约束要求
+- 所有表必须包含`created_at`和`updated_at`时间戳
+- 布尔字段默认值必须显式声明（`default: false`）
+- 外键字段命名规范：`<关联表名单数>_id`（如user_id）

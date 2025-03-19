@@ -1,0 +1,42 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+name: app-framework-design
+description: 应用框架统一设计规范
+globs: ["*"]  # 应用于所有文件
+priority: 100  # 最高优先级
+ruletype: always
+---
+
+# 应用框架设计规范
+
+## 1. 主题设计要求
+- **色彩体系**：主色#2F74FF，辅助色#F5F7FA，错误色#FF4D4F；深色模式需通过CSS变量动态切换
+- **字体规范**：中文字体-PingFang SC，英文字体-SF Pro；正文14px/行高1.5，标题采用阶梯式字号（H1-24px，H2-20px）
+- **响应式布局**：采用12列网格系统，适配移动端/PC端断点（768px/1200px）
+
+## 2. 导航设计要求
+- **全局导航**：顶部固定导航栏，包含Logo、主菜单、用户中心入口
+- **面包屑导航**：层级不超过3级，分隔符为»，点击可返回上级
+- **侧边栏导航**：在管理后台采用折叠式菜单，默认展开当前模块
+
+## 3. 头部设计要求
+- **Header区域**：高度64px，包含以下元素：
+  - Logo左对齐（尺寸120x32px）
+  - 全局搜索框（宽度240px）
+  - 通知铃铛图标（带未读计数）
+  - 用户头像下拉菜单
+
+## 4. 内容区设计要求
+- **容器规范**： 
+  ```css
+  .content-container {
+    padding: 24px;
+    margin: 16px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }

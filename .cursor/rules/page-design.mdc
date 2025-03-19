@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+name: page-design
+description: 应用页面设计规范
+globs: ["src/views/**/*.vue", "src/pages/**/*.jsx"]  # 匹配视图文件
+priority: 90
+ruletype: auto-attached
+extends: [app-framework-design.mdc](mdc:.cursor/rules/app-framework-design.mdc)  # 继承框架规范
+---
+
+# 应用页面设计要求
+
+## 1. 内容区实现规范
+- **页面结构**必须包含：
+  ```vue
+  <template>
+    <div class="page-wrapper">
+      <!-- 面包屑 -->
+      <breadcrumb :items="breadItems"/>
+      
+      <!-- 内容容器 -->
+      <div class="content-container">
+        <!-- 页面主体内容 -->
+      </div>
+    </div>
+  </template>

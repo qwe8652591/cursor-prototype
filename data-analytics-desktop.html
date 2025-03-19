@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据统计分析 - PC端</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ffb74d',
+                        secondary: '#e0e0e0',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card-hover:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+        }
+        .card-hover.large-card:hover {
+            transform: scale(1.005);
+            transition: transform 0.3s ease;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%);
+        }
+        .sidebar-item:hover {
+            background-color: rgba(255, 183, 77, 0.1);
+        }
+        .sidebar-item.active {
+            background-color: rgba(255, 183, 77, 0.2);
+            border-left: 4px solid #ffb74d;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* 添加下拉菜单动画 */
+        #userDropdown {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <div class="flex h-screen bg-gray-100">
+        <!-- 侧边栏 -->
+        <div class="w-64 bg-white shadow-md">
+            <!-- 品牌标识 -->
+            <div class="gradient-bg p-6">
+                <h1 class="text-xl font-bold text-white">快速开发管理平台</h1>
+            </div>
+            
+            <!-- 导航菜单 -->
+            <div class="py-4">
+                <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    主菜单
+                </div>
+                
+                <a href="dashboard.html" class="sidebar-item flex items-center px-6 py-3 text-gray-700">
+                    <i class="fas fa-home mr-3"></i>
+                    <span>控制台</span>
+                </a>
+                
+                <a href="data-analytics-desktop.html" class="sidebar-item active flex items-center px-6 py-3 text-gray-700">
+                    <i class="fas fa-chart-line mr-3 text-primary"></i>
+                    <span>数据统计</span>
+                </a>
+                
+                <a href="new-plugin-management.html" class="sidebar-item flex items-center px-6 py-3 text-gray-700">
+                    <i class="fas fa-puzzle-piece mr-3"></i>
+                    <span>插件管理</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 主内容区域 -->
+        <div class="flex-1 overflow-y-auto">
+            <!-- 顶部导航栏 -->
+            <div class="bg-white shadow-sm p-4 flex justify-between items-center">
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800">数据统计分析</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="搜索..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    
+                    <!-- 用户头像下拉菜单 -->
+                    <div class="relative">
+                        <button id="userAvatarBtn" class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors">
+                            <i class="fas fa-user text-gray-600"></i>
+                        </button>
+                        
+                        <!-- 下拉菜单 -->
+                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                            <div class="px-4 py-2 border-b border-gray-100">
+                                <p class="text-sm font-medium text-gray-700">用户名</p>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="handleLogout(event)">
+                                <i class="fas fa-sign-out-alt mr-2"></i>退出登录
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数据概览卡片 -->
+            <div class="p-6 grid grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover large-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-sm font-medium text-gray-500">总用户数</h2>
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary bg-opacity-20">
+                            <i class="fas fa-users text-primary"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-800">124,856</p>
+                    <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up mr-1"></i>12% 较上月</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover large-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-sm font-medium text-gray-500">总工程数</h2>
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary bg-opacity-20">
+                            <i class="fas fa-project-diagram text-primary"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-800">4,872</p>
+                    <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up mr-1"></i>9% 较上月</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover large-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-sm font-medium text-gray-500">插件总数</h2>
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary bg-opacity-20">
+                            <i class="fas fa-puzzle-piece text-primary"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-800">342</p>
+                    <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up mr-1"></i>7% 较上月</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover large-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-sm font-medium text-gray-500">插件下载量</h2>
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary bg-opacity-20">
+                            <i class="fas fa-download text-primary"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold text-gray-800">87,429</p>
+                    <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up mr-1"></i>23% 较上月</p>
+                </div>
+            </div>
+            
+            <!-- 页签导航 -->
+            <div class="px-6">
+                <div class="border-b border-gray-200">
+                    <nav class="flex -mb-px">
+                        <button class="tab-btn active whitespace-nowrap py-4 px-6 border-b-2 border-primary font-medium text-primary" data-tab="user-data">
+                            <i class="fas fa-users mr-2"></i>用户数据
+                        </button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-6 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="plugin-data">
+                            <i class="fas fa-puzzle-piece mr-2"></i>插件数据
+                        </button>
+                        <button class="tab-btn whitespace-nowrap py-4 px-6 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="project-data">
+                            <i class="fas fa-project-diagram mr-2"></i>工程数据
+                        </button>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- 页签内容区域 -->
+            <div class="px-6 py-6">
+                <!-- 用户数据页签 -->
+                <div id="user-data" class="tab-content active">
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- 活跃度数据卡片 -->
+                        <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover large-card">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-bold text-gray-800">用户活跃度</h2>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 text-xs bg-gray-100 rounded-md hover:bg-gray-200">今日</button>
+                                    <button class="px-3 py-1 text-xs bg-gray-100 rounded-md hover:bg-gray-200">本周</button>
+                                    <button class="px-3 py-1 text-xs bg-primary bg-opacity-20 text-primary rounded-md">本月</button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-6">
+                                <div class="bg-gray-50 p-5 rounded-lg">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-sm font-medium text-gray-600">日活跃用户</h3>
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center bg-primary bg-opacity-20">
+                                            <i class="fas fa-user-clock text-primary text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-2xl font-bold text-gray-800">2,458</p>
+                                    <div class="mt-2 flex items-center">
+                                        <span class="text-sm text-green-500 mr-2"><i class="fas fa-arrow-up mr-1"></i>12%</span>
+                                        <span class="text-xs text-gray-500">较上周</span>
+                                    </div>
+                                    
+                                    <!-- 简易折线图 -->
+                                    <div class="mt-4 h-16">
+                                        <canvas id="dailyActiveChart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-5 rounded-lg">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-sm font-medium text-gray-600">周活跃用户</h3>
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center bg-primary bg-opacity-20">
+                                            <i class="fas fa-calendar-week text-primary text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-2xl font-bold text-gray-800">8,742</p>
+                                    <div class="mt-2 flex items-center">
+                                        <span class="text-sm text-green-500 mr-2"><i class="fas fa-arrow-up mr-1"></i>8%</span>
+                                        <span class="text-xs text-gray-500">较上月</span>
+                                    </div>
+                                    
+                                    <!-- 简易折线图 -->
+                                    <div class="mt-4 h-16">
+                                        <canvas id="weeklyActiveChart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-5 rounded-lg">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-sm font-medium text-gray-600">月活跃用户</h3>
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center bg-primary bg-opacity-20">
+                                            <i class="fas fa-calendar-alt text-primary text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-2xl font-bold text-gray-800">24,156</p>
+                                    <div class="mt-2 flex items-center">
+                                        <span class="text-sm text-green-500 mr-2"><i class="fas fa-arrow-up mr-1"></i>15%</span>
+                                        <span class="text-xs text-gray-500">较上季度</span>
+                                    </div>
+                                    
+                                    <!-- 简易折线图 -->
+                                    <div class="mt-4 h-16">
+                                        <canvas id="monthlyActiveChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 用户创作内容排名 -->
+                        <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover large-card">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-bold text-gray-800">用户创作内容排名</h2>
+                                <select class="px-3 py-1 text-sm bg-gray-100 rounded-md border-none focus:ring-2 focus:ring-primary">
+                                    <option>按工程数量</option>
+                                    <option>按模块数量</option>
+                                    <option>按模型数量</option>
+                                </select>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">排名</th>
+                                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户</th>
+                                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">工程数量</th>
+                                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">模块数量</th>
+                                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">模型数量</th>
+                                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">活跃度</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-bold">1</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                        <i class="fas fa-user text-gray-500"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-sm font-medium text-gray-900">张三</div>
+                                                        <div class="text-xs text-gray-500">高级开发者</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">128</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 95%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">356</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">892</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 90%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">高</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-300 text-white text-xs font-bold">2</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                        <i class="fas fa-user text-gray-500"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-sm font-medium text-gray-900">李四</div>
+                                                        <div class="text-xs text-gray-500">资深工程师</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">112</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">298</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 70%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">754</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 75%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">高</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center justify-center w-6 h-6 rounded-full bg-yellow-600 text-white text-xs font-bold">3</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                        <i class="fas fa-user text-gray-500"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-sm font-medium text-gray-900">王五</div>
+                                                        <div class="text-xs text-gray-500">产品设计师</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">98</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 75%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">245</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 60%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">632</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 65%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">高</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-gray-600 text-xs font-bold">4</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                        <i class="fas fa-user text-gray-500"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-sm font-medium text-gray-900">赵六</div>
+                                                        <div class="text-xs text-gray-500">前端开发</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">87</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 65%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">198</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 50%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">521</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 55%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">中</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-gray-600 text-xs font-bold">5</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                        <i class="fas fa-user text-gray-500"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-sm font-medium text-gray-900">孙七</div>
+                                                        <div class="text-xs text-gray-500">后端工程师</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">76</div>
+                                                <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                                    <div class="bg-primary h-1.5 rounded-full" style="width: 55%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">中</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 插件数据页签 -->
+                <div id="plugin-data" class="tab-content">
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- 插件下载量卡片 -->
+                        <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover large-card">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-bold text-gray-800">插件下载量</h2>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 text-xs bg-gray-100 rounded-md hover:bg-gray-200">本周</button>
+                                    <button class="px-3 py-1 text-xs bg-gray-100 rounded-md hover:bg-gray-200">本月</button>
+                                    <button class="px-3 py-1 text-xs bg-primary bg-opacity-20 text-primary rounded-md">全部</button>
+                                </div>
+                            </div>
+                            
+                            <!-- 下载趋势图表 -->
+                            <div class="bg-gray-50 p-6 rounded-lg mb-6">
+                                <div class="flex items-center justify-between mb-6">
+                                    <div>
+                                        <h3 class="text-sm font-medium text-gray-600">下载趋势</h3>
+                                        <p class="text-xs text-gray-500 mt-1" id="trendDateRange">最近30天数据</p>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="flex items-center cursor-pointer" id="downloadsLegend">
+                                            <div class="w-3 h-3 bg-primary rounded-full mr-2"></div>
+                                            <span class="text-xs text-gray-600">下载量</span>
+                                        </div>
+                                        <div class="flex items-center cursor-pointer" id="growthLegend">
+                                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                            <span class="text-xs text-gray-600">增长率</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="relative">
+                                    <!-- 主图表 -->
+                                    <div class="h-64">
+                                        <canvas id="downloadTrendChart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <!-- 数据统计卡片 -->
+                                <div class="grid grid-cols-4 gap-4 mt-6">
+                                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-xs text-gray-500">总下载量</span>
+                                            <i class="fas fa-download text-primary text-sm"></i>
+                                        </div>
+                                        <p class="text-lg font-bold text-gray-800">87,429</p>
+                                        <div class="flex items-center mt-1">
+                                            <span class="text-xs text-green-500 mr-1"><i class="fas fa-arrow-up"></i>23%</span>
+                                            <span class="text-xs text-gray-500">较上月</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-xs text-gray-500">本月下载</span>
+                                            <i class="fas fa-calendar-alt text-primary text-sm"></i>
+                                        </div>
+                                        <p class="text-lg font-bold text-gray-800">12,458</p>
+                                        <div class="flex items-center mt-1">
+                                            <span class="text-xs text-green-500 mr-1"><i class="fas fa-arrow-up"></i>18%</span>
+                                            <span class="text-xs text-gray-500">较上月</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-xs text-gray-500">平均每日</span>
+                                            <i class="fas fa-chart-line text-primary text-sm"></i>
+                                        </div>
+                                        <p class="text-lg font-bold text-gray-800">415</p>
+                                        <div class="flex items-center mt-1">
+                                            <span class="text-xs text-green-500 mr-1"><i class="fas fa-arrow-up"></i>15%</span>
+                                            <span class="text-xs text-gray-500">较上月</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-xs text-gray-500">峰值下载</span>
+                                            <i class="fas fa-peak text-primary text-sm"></i>
+                                        </div>
+                                        <p class="text-lg font-bold text-gray-800">892</p>
+                                        <div class="flex items-center mt-1">
+                                            <span class="text-xs text-green-500 mr-1"><i class="fas fa-arrow-up"></i>32%</span>
+                                            <span class="text-xs text-gray-500">较上月</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 热门插件列表 -->
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-sm font-medium text-gray-600">热门插件排行</h3>
+                                    <a href="#" class="text-xs text-primary hover:underline">查看全部</a>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex items-center">
+                                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-bold mr-3">1</div>
+                                            <div class="w-10 h-10 rounded-md bg-primary bg-opacity-20 flex items-center justify-center mr-3">
+                                                <i class="fas fa-cube text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-800">数据可视化工具</p>
+                                                <p class="text-xs text-gray-500">v2.3.4 · 由 张三 开发</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-medium text-gray-800">12,458</p>
+                                            <p class="text-xs text-green-500"><i class="fas fa-arrow-up mr-1"></i>23%</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex items-center">
+                                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-300 text-white text-xs font-bold mr-3">2</div>
+                                            <div class="w-10 h-10 rounded-md bg-primary bg-opacity-20 flex items-center justify-center mr-3">
+                                                <i class="fas fa-code text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-800">代码生成器</p>
+                                                <p class="text-xs text-gray-500">v1.8.2 · 由 李四 开发</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-medium text-gray-800">9,874</p>
+                                            <p class="text-xs text-green-500"><i class="fas fa-arrow-up mr-1"></i>18%</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex items-center">
+                                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-yellow-600 text-white text-xs font-bold mr-3">3</div>
+                                            <div class="w-10 h-10 rounded-md bg-primary bg-opacity-20 flex items-center justify-center mr-3">
+                                                <i class="fas fa-robot text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-800">AI助手</p>
+                                                <p class="text-xs text-gray-500">v3.1.0 · 由 王五 开发</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-medium text-gray-800">7,652</p>
+                                            <p class="text-xs text-green-500"><i class="fas fa-arrow-up mr-1"></i>15%</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex items-center">
+                                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-gray-600 text-xs font-bold mr-3">4</div>
+                                            <div class="w-10 h-10 rounded-md bg-primary bg-opacity-20 flex items-center justify-center mr-3">
+                                                <i class="fas fa-palette text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-800">UI主题定制</p>
+                                                <p class="text-xs text-gray-500">v2.0.1 · 由 赵六 开发</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-medium text-gray-800">6,321</p>
+                                            <p class="text-xs text-green-500"><i class="fas fa-arrow-up mr-1"></i>12%</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                        <div class="flex items-center">
+                                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-gray-600 text-xs font-bold mr-3">5</div>
+                                            <div class="w-10 h-10 rounded-md bg-primary bg-opacity-20 flex items-center justify-center mr-3">
+                                                <i class="fas fa-database text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-800">数据库连接器</p>
+                                                <p class="text-xs text-gray-500">v1.5.3 · 由 孙七 开发</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-medium text-gray-800">5,487</p>
+                                            <p class="text-xs text-green-500"><i class="fas fa-arrow-up mr-1"></i>9%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 插件数量卡片 -->
+                        <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover large-card">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-bold text-gray-800">插件数量统计</h2>
+                                <select class="px-3 py-1 text-sm bg-gray-100 rounded-md border-none focus:ring-2 focus:ring-primary">
+                                    <option>按类别</option>
+                                    <option>按评分</option>
+                                    <option>按更新时间</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 插件类别分布 -->
+                            <div class="grid grid-cols-2 gap-6">
+                                <!-- 左侧饼图 -->
+                                <div class="bg-gray-50 p-5 rounded-lg">
+                                    <h3 class="text-sm font-medium text-gray-600 mb-4">插件类别分布</h3>
+                                    
+                                    <div class="flex justify-center mb-4">
+                                        <div class="relative w-48 h-48">
+                                            <!-- 简易饼图 -->
+                                            <svg viewBox="0 0 36 36" class="w-full h-full">
+                                                <!-- 开发工具 35% -->
+                                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 13.7897 7.9577 l -13.7897 7.9578 z" fill="#FFB74D"></path>
+                                                <!-- UI组件 25% -->
+                                                <path d="M31.7897 10.0422 a 15.9155 15.9155 0 0 1 -3.7288 16.6195 l -10.0609 -8.6617 z" fill="#FF9800"></path>
+                                                <!-- 数据处理 20% -->
+                                                <path d="M28.0609 26.6617 a 15.9155 15.9155 0 0 1 -16.1218 3.2956 l 6.0609 -11.9573 z" fill="#FFA726"></path>
+                                                <!-- 其他 20% -->
+                                                <path d="M11.9391 29.9573 a 15.9155 15.9155 0 0 1 -9.8546 -11.9151 a 15.9155 15.9155 0 0 1 5.9155 -15.8577 l 10 15.9155 z" fill="#FFCC80"></path>
+                                            </svg>
+                                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                                                <p class="text-xs text-gray-500">总数</p>
+                                                <p class="text-xl font-bold text-gray-800">342</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <div class="w-3 h-3 bg-primary rounded-sm mr-2"></div>
+                                                <span class="text-xs text-gray-600">开发工具</span>
+                                            </div>
+                                            <div class="text-xs font-medium">120 (35%)</div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <div class="w-3 h-3 bg-orange-500 rounded-sm mr-2"></div>
+                                                <span class="text-xs text-gray-600">UI组件</span>
+                                            </div>
+                                            <div class="text-xs font-medium">85 (25%)</div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <div class="w-3 h-3 bg-amber-500 rounded-sm mr-2"></div>
+                                                <span class="text-xs text-gray-600">数据处理</span>
+                                            </div>
+                                            <div class="text-xs font-medium">68 (20%)</div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <div class="w-3 h-3 bg-amber-200 rounded-sm mr-2"></div>
+                                                <span class="text-xs text-gray-600">其他</span>
+                                            </div>
+                                            <div class="text-xs font-medium">69 (20%)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 右侧统计数据 -->
+                                <div>
+                                    <div class="bg-gray-50 p-5 rounded-lg mb-6">
+                                        <h3 class="text-sm font-medium text-gray-600 mb-4">插件增长趋势</h3>
+                                        
+                                        <div class="h-32">
+                                            <canvas id="pluginGrowthChart"></canvas>
+                                        </div>
+                                        
+                                        <div class="flex justify-between mt-2 text-xs text-gray-500">
+                                            <span>Q1</span>
+                                            <span>Q2</span>
+                                            <span>Q3</span>
+                                            <span>Q4</span>
+                                            <span>Q1</span>
+                                            <span>Q2</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="bg-gray-50 p-4 rounded-lg text-center">
+                                            <p class="text-xs text-gray-500">本月新增</p>
+                                            <p class="text-xl font-bold text-gray-800">24</p>
+                                            <p class="text-xs text-green-500"><i class="fas fa-arrow-up mr-1"></i>12%</p>
+                                        </div>
+                                        <div class="bg-gray-50 p-4 rounded-lg text-center">
+                                            <p class="text-xs text-gray-500">平均评分</p>
+                                            <p class="text-xl font-bold text-gray-800">4.7</p>
+                                            <div class="flex justify-center mt-1 text-amber-400 text-xs">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 工程数据页签 -->
+                <div id="project-data" class="tab-content active">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <!-- 工程总数卡片 -->
+                        <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500">工程总数</h3>
+                                    <p class="text-2xl font-bold text-gray-800 mt-1">4,872</p>
+                                </div>
+                                <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-project-diagram text-amber-500 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">本月新增</span>
+                                    <span class="text-sm font-medium text-green-600">+128</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">活跃工程</span>
+                                    <span class="text-sm font-medium text-amber-600">3,245</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">平均模块数</span>
+                                    <span class="text-sm font-medium text-gray-800">12.5</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">增长率</span>
+                                    <div class="flex items-center">
+                                        <span class="text-sm font-medium text-green-600">+15.2%</span>
+                                        <i class="fas fa-arrow-up text-green-500 text-xs ml-1"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 模块总数卡片 -->
+                        <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500">模块总数</h3>
+                                    <p class="text-2xl font-bold text-gray-800 mt-1">58,464</p>
+                                </div>
+                                <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-cubes text-amber-500 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">本月新增</span>
+                                    <span class="text-sm font-medium text-green-600">+1,536</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">基础模块</span>
+                                    <span class="text-sm font-medium text-amber-600">12,345</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">功能模块</span>
+                                    <span class="text-sm font-medium text-amber-600">35,678</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">复用率</span>
+                                    <div class="flex items-center">
+                                        <span class="text-sm font-medium text-green-600">68.5%</span>
+                                        <i class="fas fa-arrow-up text-green-500 text-xs ml-1"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 模型总数卡片 -->
+                        <div class="bg-white rounded-xl shadow-md p-6 transition-all duration-300 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500">模型总数</h3>
+                                    <p class="text-2xl font-bold text-gray-800 mt-1">23,456</p>
+                                </div>
+                                <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-database text-amber-500 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">本月新增</span>
+                                    <span class="text-sm font-medium text-green-600">+624</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">数据模型</span>
+                                    <span class="text-sm font-medium text-amber-600">15,789</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">业务模型</span>
+                                    <span class="text-sm font-medium text-amber-600">7,667</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">使用率</span>
+                                    <div class="flex items-center">
+                                        <span class="text-sm font-medium text-green-600">82.3%</span>
+                                        <i class="fas fa-arrow-up text-green-500 text-xs ml-1"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 代码 -->
+    <script>
+        // 页签切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的活跃状态
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.classList.remove('border-primary');
+                        btn.classList.remove('text-primary');
+                        btn.classList.add('border-transparent');
+                        btn.classList.add('text-gray-500');
+                    });
+                    
+                    // 添加当前按钮的活跃状态
+                    this.classList.add('active');
+                    this.classList.add('border-primary');
+                    this.classList.add('text-primary');
+                    this.classList.remove('border-transparent');
+                    this.classList.remove('text-gray-500');
+                    
+                    // 隐藏所有内容
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // 显示对应内容
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // 下载趋势图表数据
+            const chartData = {
+                week: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    downloads: [120, 150, 180, 200, 160, 140, 130],
+                    growth: [5, 8, 12, 15, 10, 7, 6]
+                },
+                month: {
+                    labels: ['1日', '5日', '10日', '15日', '20日', '25日', '30日'],
+                    downloads: [150, 180, 220, 250, 280, 300, 320],
+                    growth: [8, 12, 15, 18, 20, 22, 25]
+                },
+                all: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'],
+                    downloads: [200, 250, 300, 350, 400, 450, 500],
+                    growth: [10, 15, 20, 25, 30, 35, 40]
+                }
+            };
+
+            // 创建图表
+            const ctx = document.getElementById('downloadTrendChart').getContext('2d');
+            let downloadTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.all.labels,
+                    datasets: [
+                        {
+                            label: '下载量',
+                            data: chartData.all.downloads,
+                            borderColor: '#FFB74D',
+                            backgroundColor: 'rgba(255, 183, 77, 0.4)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: '增长率',
+                            data: chartData.all.growth,
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.4)',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 图例点击切换功能
+            const downloadsLegend = document.getElementById('downloadsLegend');
+            const growthLegend = document.getElementById('growthLegend');
+            let showDownloads = true;
+            let showGrowth = true;
+
+            downloadsLegend.addEventListener('click', function() {
+                showDownloads = !showDownloads;
+                downloadTrendChart.data.datasets[0].hidden = !showDownloads;
+                this.style.opacity = showDownloads ? '1' : '0.5';
+                downloadTrendChart.update();
+            });
+
+            growthLegend.addEventListener('click', function() {
+                showGrowth = !showGrowth;
+                downloadTrendChart.data.datasets[1].hidden = !showGrowth;
+                this.style.opacity = showGrowth ? '1' : '0.5';
+                downloadTrendChart.update();
+            });
+
+            // 时间范围切换功能
+            const timeRangeButtons = document.querySelectorAll('.bg-white.rounded-xl.shadow-md button');
+            const trendDateRange = document.getElementById('trendDateRange');
+
+            timeRangeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的活跃状态
+                    timeRangeButtons.forEach(btn => {
+                        btn.classList.remove('bg-primary', 'bg-opacity-20', 'text-primary');
+                        btn.classList.add('bg-gray-100');
+                    });
+
+                    // 添加当前按钮的活跃状态
+                    this.classList.remove('bg-gray-100');
+                    this.classList.add('bg-primary', 'bg-opacity-20', 'text-primary');
+
+                    // 更新图表数据
+                    const range = this.textContent.trim();
+                    let data;
+                    let dateRangeText;
+
+                    switch(range) {
+                        case '本周':
+                            data = chartData.week;
+                            dateRangeText = '本周数据';
+                            break;
+                        case '本月':
+                            data = chartData.month;
+                            dateRangeText = '本月数据';
+                            break;
+                        case '全部':
+                            data = chartData.all;
+                            dateRangeText = '最近30天数据';
+                            break;
+                    }
+
+                    downloadTrendChart.data.labels = data.labels;
+                    downloadTrendChart.data.datasets[0].data = data.downloads;
+                    downloadTrendChart.data.datasets[1].data = data.growth;
+                    downloadTrendChart.update();
+                    trendDateRange.textContent = dateRangeText;
+                });
+            });
+        });
+
+        // 头像下拉菜单交互
+        const userAvatarBtn = document.getElementById('userAvatarBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        
+        userAvatarBtn.addEventListener('click', () => {
+            userDropdown.classList.toggle('hidden');
+        });
+        
+        // 点击其他地方关闭下拉菜单
+        document.addEventListener('click', (e) => {
+            if (!userAvatarBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+
+        // 检查登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // 退出登录处理
+        function handleLogout(event) {
+            event.preventDefault();
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            window.location.href = 'login.html';
+        }
+
+        // 用户活跃度图表数据
+        const activeUserData = {
+            daily: {
+                labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                data: [30, 28, 32, 25, 27, 20, 22]
+            },
+            weekly: {
+                labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                data: [25, 28, 22, 25, 20, 18, 15]
+            },
+            monthly: {
+                labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                data: [30, 28, 25, 22, 20, 18, 15]
+            }
+        };
+
+        // 创建用户活跃度图表
+        const dailyActiveCtx = document.getElementById('dailyActiveChart').getContext('2d');
+        new Chart(dailyActiveCtx, {
+            type: 'line',
+            data: {
+                labels: activeUserData.daily.labels,
+                datasets: [{
+                    data: activeUserData.daily.data,
+                    borderColor: '#FFB74D',
+                    backgroundColor: 'rgba(255, 183, 77, 0.4)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false
+                    },
+                    x: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        const weeklyActiveCtx = document.getElementById('weeklyActiveChart').getContext('2d');
+        new Chart(weeklyActiveCtx, {
+            type: 'line',
+            data: {
+                labels: activeUserData.weekly.labels,
+                datasets: [{
+                    data: activeUserData.weekly.data,
+                    borderColor: '#FFB74D',
+                    backgroundColor: 'rgba(255, 183, 77, 0.4)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false
+                    },
+                    x: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        const monthlyActiveCtx = document.getElementById('monthlyActiveChart').getContext('2d');
+        new Chart(monthlyActiveCtx, {
+            type: 'line',
+            data: {
+                labels: activeUserData.monthly.labels,
+                datasets: [{
+                    data: activeUserData.monthly.data,
+                    borderColor: '#FFB74D',
+                    backgroundColor: 'rgba(255, 183, 77, 0.4)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false
+                    },
+                    x: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // 插件增长趋势图表数据
+        const pluginGrowthData = {
+            labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1', 'Q2'],
+            data: [40, 45, 50, 60, 75, 90]
+        };
+
+        // 创建插件增长趋势图表
+        const pluginGrowthCtx = document.getElementById('pluginGrowthChart').getContext('2d');
+        new Chart(pluginGrowthCtx, {
+            type: 'bar',
+            data: {
+                labels: pluginGrowthData.labels,
+                datasets: [{
+                    data: pluginGrowthData.data,
+                    backgroundColor: '#FFB74D',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        display: false
+                    },
+                    x: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
